@@ -53,30 +53,18 @@ let Num_Reaction = ({id_post,cookie,agent,fb_dtsg})=>{
 
         };
         request(option, function (err, res, body){
-            let num_like = FINDid(body,'reaction_type=1&total_count=','&');
-            let num_heart = FINDid(body,'reaction_type=2&total_count=','&');
-            let num_lol = FINDid(body,'reaction_type=3&total_count=','&');
-            let num_surprise = FINDid(body,'reaction_type=4&total_count=','&');
+            let $ = cheerio.load(body)
+
+            let num_like = body.indexOf('reaction_type=1&total_count=') > 0 ? FINDid(body,'reaction_type=1&total_count=','&'): 0;
+            let num_heart = body.indexOf('reaction_type=2&total_count=') > 0 ? FINDid(body,'reaction_type=2&total_count=','&'): 0;
+            let num_lol = body.indexOf('reaction_type=3&total_count=') > 0 ? FINDid(body,'reaction_type=3&total_count=','&'): 0;
+            let num_surprise = body.indexOf('reaction_type=4&total_count=') > 0 ? FINDid(body,'reaction_type=4&total_count=','&'):0;
+            if(num_like === 0 && num_heart === 0 && num_lol === 0 && num_surprise === 0){
+                num_like = $('span[data-sigil="reaction_profile_tab_count"]').text();
+            }
             resolve({num_like,num_heart,num_lol,num_surprise})
 
         });
-    });
-};
-let getIDfacebook = (surname)=>{
-    return new Promise(resolve=>{
-        let option = {
-            url:'https://findmyfbid.com/',
-            method:'POST',
-            headers:{
-                'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'
-            },
-            form:{
-                url:'https://www.facebook.com/'+surname
-            }
-        };
-        request(option,(err,res,body)=>{
-            resolve(JSON.parse(body).id)
-        })
     });
 };
 let getNameThroughtId = ({id,cookie})=>{
@@ -117,7 +105,11 @@ let Reaction_Int = ({url,id_post,cookie,agent,fb_dtsg})=>{
 
         };
         request(option, async function (err, res, body) {
+
             let final = [];
+            if(body.includes('html>')){
+                return resolve(final)
+            }
             body = body.replace('for (;;);','');
             if(JSON.parse(body).payload.actions[3]){
                 let data =  JSON.parse(body).payload.actions[3].code;
@@ -164,6 +156,7 @@ module.exports = async ({id_post,reaction,cookie,agent})=>{
             throw {error:'400',result:[]}
         }
         let Num = await Num_Reaction({id_post, cookie, agent, fb_dtsg});
+        console.log(Num)
         switch (parseInt(reaction)) {
             case 1:
                 reaction_count = Num.num_like;
