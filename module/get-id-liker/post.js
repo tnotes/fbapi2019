@@ -79,6 +79,25 @@ let getIDfacebook = (surname)=>{
         })
     });
 };
+let getNameThroughtId = ({id,cookie})=>{
+    return new Promise(resolve=>{
+        let option = {
+            method: 'get',
+            url:'https://m.facebook.com/'+id,
+            headers: {
+                "Cookie":cookie,
+                "User-Agent": 'Nokia6630/1.0 (2.3.129) SymbianOS/8.0 Series60/2.6 Profile/MIDP-2.0 Configuration/CLDC-1.1',
+            },
+
+        };
+        request(option, async function (err, res, body) {
+
+            let $ = cheerio.load(body);
+            let name = $('div#root').find("strong").text();
+            return resolve({name,id})
+        });
+    })
+};
 let Reaction_Int = ({url,id_post,cookie,agent,fb_dtsg})=>{
     return new Promise(resolve=> {
         let option = {
@@ -123,6 +142,10 @@ let Reaction_Int = ({url,id_post,cookie,agent,fb_dtsg})=>{
 
 
             }
+
+            let finalMap = final.map(e=>getNameThroughtId({id:e,cookie:cookie}));
+            final = await Promise.all(finalMap);
+
             resolve(final)
 
 
@@ -164,7 +187,7 @@ module.exports = async ({id_post,reaction,cookie,agent})=>{
 
             let Reaction_Action = await Reaction_Int({url, id_post, cookie, agent, fb_dtsg});
             result = result.concat(Reaction_Action);
-            if(Reaction_Action.length>0){
+            if(Reaction_Action.length>0 && arr_id_already.length < Num){
                 let listID = Reaction_Action.map(e=>e);
                 arr_id_already = arr_id_already.concat(listID);
                 url = 'https://m.facebook.com/ufi/reaction/profile/browser/fetch/?limit=3000&reaction_type=' + reaction + '&shown_ids='+arr_id_already.join('%2C')+'&total_count='+reaction_count+'&ft_ent_identifier=' + id_post;

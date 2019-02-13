@@ -43,7 +43,7 @@ module.exports = async ({cookie,agent})=>{
     let id = FINDid(cookie, "c_user=", ";");
     let info = await infoAction({id,cookie,agent});
     if(info === false){
-        return {error:400',result:[]}
+        return {error:'400',result:[]}
     }else {
         return info;
     }

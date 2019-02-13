@@ -67,6 +67,7 @@ route.post('/post',async (req,res)=>{
         content:data.content,
         ImageArr:data.ImageArr || [],
         color:data.color,
+        postLink:data.postLink || null,
         youtubeLink:data.youtubeLink,
         group:data.group || null,
         page:data.page || null
