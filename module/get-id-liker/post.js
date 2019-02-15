@@ -81,7 +81,7 @@ let getNameThroughtId = ({id,cookie})=>{
         request(option, async function (err, res, body) {
 
             let $ = cheerio.load(body);
-            let name = $('div#root').find("strong").text();
+            let name = $('div#root').find("strong").eq(0).text();
             return resolve({name,id})
         });
     })
