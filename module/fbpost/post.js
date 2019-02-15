@@ -334,6 +334,7 @@ let run = async ({location,cookie,agent,content,ImageArr,color,postLink,youtubeL
                 postLinkFaceObj.share_type = 22;
 
                 postLinkFaceObj.postID = postLink.substr(postLink.indexOf('/posts/')+'/posts/'.length).trim().replace('/','')
+
             }else if(postLink.includes('/permalink/') && postLink.includes('/groups/')){
                 postLinkFaceObj.share_type = 37;
                 postLinkFaceObj.postID = postLink.substr(postLink.indexOf('/permalink/')+'/permalink/'.length).trim().replace('/','')
@@ -345,6 +346,12 @@ let run = async ({location,cookie,agent,content,ImageArr,color,postLink,youtubeL
             }else if(postLink.includes('?__tn__=-R')){
                 postLinkFaceObj.share_type = 22;
                 postLinkFaceObj.postID = id(postLink,'/posts/','?__tn__=-R')
+            }else if(postLink.includes('/videos/')){
+                console.log('hello')
+                postLinkFaceObj.share_type = 11;
+                postLinkFaceObj.postID = postLink.substr(postLink.indexOf('/videos/')+'/videos/'.length).trim().replace('/','')
+
+                console.log(postLinkFaceObj)
             }
 
         }else{

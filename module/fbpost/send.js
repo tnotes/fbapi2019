@@ -51,6 +51,10 @@ module.exports = function (location, id, content, color, photoID,postLinkFaceObj
             obj["input"]["attachments"] = [{"link":{"share_scrape_data":"{'share_type':"+postLinkFaceObj.share_type+",'share_params':['"+postLinkFaceObj.postID+"'],'shared_from_post_id':null}"}}]
         }else if(postLinkFaceObj.share_type === 2){
             obj["input"]["attachments"] = [{"link":{"share_scrape_data":"{'share_type':"+postLinkFaceObj.share_type+",'share_params':['"+postLinkFaceObj.postID+"'],'shared_from_post_id':null}"}}]
+
+        }else if(postLinkFaceObj.share_type === 11){
+            obj["input"]["attachments"] = [{"link":{"share_scrape_data":"{'share_type':"+postLinkFaceObj.share_type+",'share_params':['"+postLinkFaceObj.postID+"'],'shared_from_post_id':null}"}}]
+
         }
     }
     else if (photoID.length > 0) {
